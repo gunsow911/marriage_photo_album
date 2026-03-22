@@ -83,8 +83,8 @@ export default function PhotoViewer({ photos }: Props) {
           {photo.caption && (
             <div className="absolute bottom-12 left-0 right-0 text-center pointer-events-none">
               <span
-                className="px-4 py-1 rounded-full text-sm "
-                style={{ background: 'rgba(255,0,0,0.25)' }}
+                className="px-4 py-1 rounded-full text-sm text-white"
+                style={{ background: 'rgba(0,0,0,0.5)' }}
               >
                 {photo.caption}
               </span>
@@ -94,23 +94,26 @@ export default function PhotoViewer({ photos }: Props) {
       </AnimatePresence>
 
       <button
-        className="absolute left-2 z-10 btn btn-circle btn-sm  border-0"
-        style={{ background: 'rgba(255,0,0,0.25)' }}
+        className="absolute left-2 z-10 btn btn-circle btn-sm border-0 text-white"
+        style={{ background: 'rgba(0,0,0,0.5)' }}
         onClick={prev}
       >
         ‹
       </button>
 
       <button
-        className="absolute right-2 z-10 btn btn-circle btn-sm border-0"
-        style={{ background: 'rgba(255,0,0,0.25)' }}
+        className="absolute right-2 z-10 btn btn-circle btn-sm border-0 text-white"
+        style={{ background: 'rgba(0,0,0,0.5)' }}
         onClick={next}
       >
         ›
       </button>
 
       <div className="absolute bottom-3 left-0 right-0 text-center pointer-events-none">
-        <span className="text-white/60 text-sm">
+        <span
+          className="px-4 py-1 rounded-full text-sm text-white"
+          style={{ background: 'rgba(0,0,0,0.5)' }}
+        >
           {index + 1} / {photos.length}
         </span>
       </div>
