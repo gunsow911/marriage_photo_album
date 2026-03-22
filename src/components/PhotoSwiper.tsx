@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Photo } from '../data/albums'
 
@@ -9,6 +9,7 @@ interface Props {
 export default function PhotoViewer({ photos }: Props) {
   const [index, setIndex] = useState(0)
   const [direction, setDirection] = useState(0)
+  const touchStartX = useRef<number | null>(null)
 
   const go = (next: number) => {
     setDirection(next > index ? 1 : -1)
@@ -18,12 +19,26 @@ export default function PhotoViewer({ photos }: Props) {
   const prev = () => index > 0 && go(index - 1)
   const next = () => index < photos.length - 1 && go(index + 1)
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return
+    const diff = touchStartX.current - e.changedTouches[0].clientX
+    if (diff > 50) next()
+    else if (diff < -50) prev()
+    touchStartX.current = null
+  }
+
   const photo = photos[index]
 
   return (
     <div
-      className="relative flex flex-col items-center justify-center bg-black"
-      style={{ height: 'calc(100vh - 64px)' }}
+      className="relative flex flex-col items-center justify-center bg-white"
+      style={{ height: '100dvh' }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       <AnimatePresence initial={false} custom={direction} mode="wait">
         <motion.div
