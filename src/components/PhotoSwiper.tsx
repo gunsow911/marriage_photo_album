@@ -9,6 +9,7 @@ interface Props {
 export default function PhotoViewer({ photos }: Props) {
   const [index, setIndex] = useState(0)
   const [direction, setDirection] = useState(0)
+  const [hearts, setHearts] = useState<{ id: number; x: number; y: number; dx: number; dy: number; duration: number; rotate: number }[]>([])
   const touchStartX = useRef<number | null>(null)
 
   const go = (next: number) => {
@@ -25,7 +26,24 @@ export default function PhotoViewer({ photos }: Props) {
   }, [index])
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX
+    const touch = e.touches[0]
+    touchStartX.current = touch.clientX
+    const count = Math.random() < 0.5 ? 3 : 4
+    const newHearts = Array.from({ length: count }, (_, i) => {
+      const angleDeg = Math.random() * 60 - 30
+      const angleRad = angleDeg * (Math.PI / 180)
+      const distance = Math.random() * 60 + 60 // 60〜120px
+      return {
+        id: Date.now() + i,
+        x: touch.clientX,
+        y: touch.clientY,
+        dx: Math.sin(angleRad) * distance,
+        dy: -Math.cos(angleRad) * distance,
+        duration: Math.random() * 0.4 + 1.0, // 1.0〜1.4s
+        rotate: angleDeg,
+      }
+    })
+    setHearts(prev => [...prev, ...newHearts])
   }
 
   const handleTouchEnd = (e: React.TouchEvent) => {
@@ -39,6 +57,7 @@ export default function PhotoViewer({ photos }: Props) {
   const photo = photos[index]
 
   return (
+    <>
     <div
       className="relative flex flex-col items-center justify-center"
       style={{ height: '100dvh' }}
@@ -74,7 +93,6 @@ export default function PhotoViewer({ photos }: Props) {
         </motion.div>
       </AnimatePresence>
 
-      {/* Prev button */}
       <button
         className="absolute left-2 z-10 btn btn-circle btn-sm  border-0"
         style={{ background: 'rgba(255,0,0,0.25)' }}
@@ -83,7 +101,6 @@ export default function PhotoViewer({ photos }: Props) {
         ‹
       </button>
 
-      {/* Next button */}
       <button
         className="absolute right-2 z-10 btn btn-circle btn-sm border-0"
         style={{ background: 'rgba(255,0,0,0.25)' }}
@@ -92,12 +109,36 @@ export default function PhotoViewer({ photos }: Props) {
         ›
       </button>
 
-      {/* Counter */}
       <div className="absolute bottom-3 left-0 right-0 text-center pointer-events-none">
         <span className="text-white/60 text-sm">
           {index + 1} / {photos.length}
         </span>
       </div>
     </div>
+    {hearts.map(heart => (
+      <motion.div
+        key={heart.id}
+        style={{
+          position: 'fixed',
+          left: heart.x,
+          top: heart.y,
+          pointerEvents: 'none',
+          zIndex: 50,
+          translateX: '-50%',
+          translateY: '-50%',
+          fontSize: '1.5rem',
+          color: '#e75480',
+        }}
+        initial={{ opacity: 1, x: 0, y: 0, scale: 1, rotate: heart.rotate }}
+        animate={{ opacity: 0, x: heart.dx, y: heart.dy, scale: 1.3, rotate: heart.rotate }}
+        transition={{ duration: heart.duration, ease: 'easeOut' }}
+        onAnimationComplete={() =>
+          setHearts(prev => prev.filter(h => h.id !== heart.id))
+        }
+      >
+        ♥
+      </motion.div>
+    ))}
+  </>
   )
 }
