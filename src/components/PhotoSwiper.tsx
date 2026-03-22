@@ -16,8 +16,8 @@ export default function PhotoViewer({ photos }: Props) {
     setIndex(next)
   }
 
-  const prev = () => index > 0 && go(index - 1)
-  const next = () => index < photos.length - 1 && go(index + 1)
+  const prev = () => go((index - 1 + photos.length) % photos.length)
+  const next = () => go((index + 1) % photos.length)
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX
@@ -70,24 +70,20 @@ export default function PhotoViewer({ photos }: Props) {
       </AnimatePresence>
 
       {/* Prev button */}
-      {index > 0 && (
-        <button
-          className="absolute left-2 z-10 btn btn-circle btn-sm bg-black/40 border-0 text-white hover:bg-black/60"
-          onClick={prev}
-        >
-          ‹
-        </button>
-      )}
+      <button
+        className="absolute left-2 z-10 btn btn-circle btn-sm bg-black/40 border-0 text-white hover:bg-black/60"
+        onClick={prev}
+      >
+        ‹
+      </button>
 
       {/* Next button */}
-      {index < photos.length - 1 && (
-        <button
-          className="absolute right-2 z-10 btn btn-circle btn-sm bg-black/40 border-0 text-white hover:bg-black/60"
-          onClick={next}
-        >
-          ›
-        </button>
-      )}
+      <button
+        className="absolute right-2 z-10 btn btn-circle btn-sm bg-black/40 border-0 text-white hover:bg-black/60"
+        onClick={next}
+      >
+        ›
+      </button>
 
       {/* Counter */}
       <div className="absolute bottom-3 left-0 right-0 text-center pointer-events-none">
