@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Photo } from '../data/albums'
 
@@ -19,6 +19,11 @@ export default function PhotoViewer({ photos }: Props) {
   const prev = () => go((index - 1 + photos.length) % photos.length)
   const next = () => go((index + 1) % photos.length)
 
+  useEffect(() => {
+    const timer = setInterval(() => next(), 10000)
+    return () => clearInterval(timer)
+  }, [index])
+
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX
   }
@@ -35,7 +40,7 @@ export default function PhotoViewer({ photos }: Props) {
 
   return (
     <div
-      className="relative flex flex-col items-center justify-center bg-white"
+      className="relative flex flex-col items-center justify-center"
       style={{ height: '100dvh' }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
@@ -59,8 +64,8 @@ export default function PhotoViewer({ photos }: Props) {
           {photo.caption && (
             <div className="absolute bottom-12 left-0 right-0 text-center pointer-events-none">
               <span
-                className="px-4 py-1 rounded-full text-sm text-white"
-                style={{ background: 'rgba(0,0,0,0.55)' }}
+                className="px-4 py-1 rounded-full text-sm "
+                style={{ background: 'rgba(255,0,0,0.25)' }}
               >
                 {photo.caption}
               </span>
@@ -71,7 +76,8 @@ export default function PhotoViewer({ photos }: Props) {
 
       {/* Prev button */}
       <button
-        className="absolute left-2 z-10 btn btn-circle btn-sm bg-black/40 border-0 text-white hover:bg-black/60"
+        className="absolute left-2 z-10 btn btn-circle btn-sm  border-0"
+        style={{ background: 'rgba(255,0,0,0.25)' }}
         onClick={prev}
       >
         ‹
@@ -79,7 +85,8 @@ export default function PhotoViewer({ photos }: Props) {
 
       {/* Next button */}
       <button
-        className="absolute right-2 z-10 btn btn-circle btn-sm bg-black/40 border-0 text-white hover:bg-black/60"
+        className="absolute right-2 z-10 btn btn-circle btn-sm border-0"
+        style={{ background: 'rgba(255,0,0,0.25)' }}
         onClick={next}
       >
         ›
