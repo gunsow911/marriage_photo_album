@@ -129,9 +129,9 @@ export default function PhotoViewer({ photos }: Props) {
           fontSize: '1.5rem',
           color: '#e75480',
         }}
-        initial={{ opacity: 1, x: 0, y: 0, scale: 1, rotate: heart.rotate }}
-        animate={{ opacity: 0, x: heart.dx, y: heart.dy, scale: 1.3, rotate: heart.rotate }}
-        transition={{ duration: heart.duration, ease: 'easeOut' }}
+        initial={{ opacity: 1, x: 0, y: 0, scale: 2.0, rotate: heart.rotate }}
+        animate={{ opacity: 0, x: heart.dx, y: heart.dy, scale: 0.7, rotate: heart.rotate }}
+        transition={{ duration: heart.duration, ease: 'circOut' }}
         onAnimationComplete={() =>
           setHearts(prev => prev.filter(h => h.id !== heart.id))
         }
